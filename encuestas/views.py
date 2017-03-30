@@ -197,13 +197,13 @@ def principal_dashboard(request, template='dashboard.html', departamento_id=None
         years.append((en,en))
     muchos_tiempo = list(sorted(set(years)))
 
-    tiempo_patron_gasto = {}
-    tiempo_ingresos = {}
-    tiempo_kcalorias = {}
-    tiempo_gastos_alimentarios = {}
-    tiempo_clima = {}
-    tiempo_arana = {}
-    tiempo_rendimiento = {}
+    tiempo_patron_gasto = OrderedDict()
+    tiempo_ingresos = OrderedDict()
+    tiempo_kcalorias = OrderedDict()
+    tiempo_gastos_alimentarios = OrderedDict()
+    tiempo_clima = OrderedDict()
+    tiempo_arana = OrderedDict()
+    tiempo_rendimiento = OrderedDict()
     for anio in muchos_tiempo:
         # grafico de patron de gastos
         gasto_finca_verano=0
@@ -406,13 +406,13 @@ def principal_dashboard_pais(request, template='dashboard_pais.html', pais=None,
         years.append((en,en))
     muchos_tiempo = list(sorted(set(years)))
 
-    tiempo_patron_gasto = {}
-    tiempo_ingresos = {}
-    tiempo_kcalorias = {}
-    tiempo_gastos_alimentarios = {}
-    tiempo_clima = {}
-    tiempo_arana = {}
-    tiempo_rendimiento = {}
+    tiempo_patron_gasto = OrderedDict()
+    tiempo_ingresos = OrderedDict()
+    tiempo_kcalorias = OrderedDict()
+    tiempo_gastos_alimentarios = OrderedDict()
+    tiempo_clima = OrderedDict()
+    tiempo_arana = OrderedDict()
+    tiempo_rendimiento = OrderedDict()
     for anio in muchos_tiempo:
         # grafico de patron de gastos
         gasto_finca_verano=0
