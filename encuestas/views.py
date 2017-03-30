@@ -1498,6 +1498,7 @@ def ingresos(request, template="indicadores/ingresos.html"):
                                         'ingreso': ingreso,
                                         }
         total_ingreso_procesado = sum(list([ i['ingreso'] for i in ingreso_procesado.values()]))
+        gran_total_ingresos = 0
         try:
             gran_total_ingresos = float(total_utilidad_tradicional + utilidad_huerto_patio + utilidad_frutas + total_ingreso_ganado + total_ingreso_procesado) / filtro1
         except:
