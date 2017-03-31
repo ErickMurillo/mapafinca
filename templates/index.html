@@ -5,91 +5,17 @@
 {% block extra_js %}
 	<script src="/static/js/modernizr.custom.js"></script>
 	<script src="/static/js/classie.js"></script>
-	<script src="/static/js/uiMorphingButton_fixed.js"></script>
-	<script type="text/javascript" src="/static/js/bootstrap-multiselect.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#example-getting-started').multiselect();
-				$('#id_fecha').multiselect();
-	 		 	$('#id_organizacion').multiselect();
-	      $('#id_pais').multiselect();
-	      $('#id_departamento').multiselect();
-	      $('#id_municipio').multiselect();
-	      $('#id_comunidad').multiselect();
-    });
-
-</script>
-
+	{% for k,v in paises.items %}
 	<script>
-	// var elems = document.getElementsByClassName('valorBadge');
-	// var sum = 0;
-	// for (var i = 0;i < elems.length; i++) {
-	//   sum += parseInt(elems[i].innerHTML, 10);
-	// }
-	// document.getElementById('totalBadge').innerHTML = sum;
-
-			(function() {
-				var docElem = window.document.documentElement, didScroll, scrollPosition;
-
-				// trick to prevent scrolling when opening/closing button
-				function noScrollFn() {
-					window.scrollTo( scrollPosition ? scrollPosition.x : 0, scrollPosition ? scrollPosition.y : 0 );
-				}
-
-				function noScroll() {
-					window.removeEventListener( 'scroll', scrollHandler );
-					window.addEventListener( 'scroll', noScrollFn );
-				}
-
-				function scrollFn() {
-					window.addEventListener( 'scroll', scrollHandler );
-				}
-
-				function canScroll() {
-					window.removeEventListener( 'scroll', noScrollFn );
-					scrollFn();
-				}
-
-				function scrollHandler() {
-					if( !didScroll ) {
-						didScroll = true;
-						setTimeout( function() { scrollPage(); }, 60 );
-					}
-				};
-
-				function scrollPage() {
-					scrollPosition = { x : window.pageXOffset || docElem.scrollLeft, y : window.pageYOffset || docElem.scrollTop };
-					didScroll = false;
-				};
-
-				scrollFn();
-
-				var UIBtnn = new UIMorphingButton( document.querySelector( '.morph-button' ), {
-					closeEl : '.icon-close',
-					onBeforeOpen : function() {
-						// don't allow to scroll
-						noScroll();
-					},
-					onAfterOpen : function() {
-						// can scroll again
-						canScroll();
-					},
-					onBeforeClose : function() {
-						// don't allow to scroll
-						noScroll();
-					},
-					onAfterClose : function() {
-						// can scroll again
-						canScroll();
-					}
-				} );
-
-				document.getElementById( 'terms' ).addEventListener( 'change', function() {
-					UIBtnn.toggle();
-				} );
-			})();
+		var elems = document.getElementsByClassName('valorBadge-{{k|slugify}}');
+		var sum = 0;
+			for (var i = 0;i < elems.length; i++) {
+			sum += parseInt(elems[i].innerHTML, 10);
+			}
+		document.getElementById('totalBadge-{{k|slugify}}').innerHTML = sum;
 	</script>
+	{% endfor %}
+
 {% endblock extra_js %}
 {% block contenido %}
 <div class="row contenedor-index">
@@ -111,57 +37,29 @@
 			{% for k,v in paises.items %}
 				<div class="panel">
 					<div class="panel-heading">
-						<a class="btn-ex" data-toggle="collapse" href="#{{k|slugify}}" aria-expanded="false" aria-controls="{{k|slugify}}">
+						<a class="btn-ex" data-toggle="collapse" href="#{{k|slugify}}" aria-expanded="true" aria-controls="{{k|slugify}}">
 						  <span class="glyphicon glyphicon-chevron-down"> {{k}}</span>
 						</a>
 					</div>
-					<div class="collapse panel-body" id="{{k|slugify}}" >
+					<div class="collapse {% if forloop.counter == 1 %}in{% endif %} panel-body " id="{{k|slugify}}" >
 						 <ul>
 							{% for key,value in v.items %}
 							<ul class="list-group">
 								<li class="list-group-item">
-									<span class="badge valorBadge" >{{value.0}}</span>
+									<span class="badge valorBadge-{{k|slugify}}" >{{value.0}}</span>
 									<a href="/dashboard-principal/{{value.1}}">{{key}}</a>
 								</li>
 							</ul>
 							{% endfor %}
 							<li class="list-group-item">
-								<span class="badge"><div id="totalBadge"></div></span>
+								<span class="badge"><div id="totalBadge-{{k|slugify}}"></div></span>
 								<a href="/dashboard-principal-pais/{{k|slugify}}">Todo {{k}}</a>
 							</li>
 						 </ul>
 					</div>
 				</div>
 			{% endfor %}
-			<div class="col-lg-12">
-				<div class="row">
-					<div class="col-xs-3 col-md-5 col-lg-5 boton-1">
-							<div class="mockup-content">
-								<div class="morph-button morph-button-modal morph-button-modal-1 morph-button-fixed">
-									<button type="button" class="btn btn-filtro">Acerca del SMF</button>
-									<div class="morph-content">
-										<div>
-											<div class="content-style-text">
-												<span class="icon icon-close">Close the dialog</span>
-												<h2>Monitoreo</h2>
-												<p>El Programa Medios de Vida Sostenible con enfoque en la gestión de riesgo y el cambio climático de CAFOD, implementa el sistema de monitoreo de finca que tiene como fin identificar la mejoría del bienestar de vida de familias campesinas atendidas por el programa a través de co-partes en territorio. Toda la información generada por el sistema de monitoreo de finca proviene de la aplicación de una encuesta a familias y medir avances con respecto años anteriores.</p>
-												<br>
-												<p>El Sistema de monitoreo de Finca permitirá visualizar cómo esta la finca hoy y pensar cómo se quiere ver en el futuro, de acuerdo a las posibilidades de las familias y condiciones medioambientales. Se podrá obtener datos generados a través de gráficos, tablas e imágenes y podrá verlo desde teléfonos móviles y tabletas.</p>
 
-											</div>
-										</div>
-									</div>
-								</div><!-- morph-button -->
-							</div><!-- /form-mockup -->
-					</div>
-					<div class="col-xs-6 col-md-7 col-lg-7 boton-2">
-						<a class='btn btn-galeria' href="/galeria/">Galerías mapas de fincas</a>
-					</div>
-					<div class="col-xs-6 col-md-7 col-lg-7 boton-2">
-						<a class='btn btn-galeria' href="/indicadores1/">Todos los indicadores</a>
-					</div>
-				</div>
-			</div>
 		</div>
 
 

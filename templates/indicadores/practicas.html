@@ -296,7 +296,7 @@ $('#container4-{{key}}').highcharts({
                {% for k,v in dicc_practicas.items %}
 
                  <li class="col-xs-6 col-sm-4 col-md-2 col-lg-2 {% if forloop.counter == 1 %}active{% endif %}" role="presentation">
-                    <a class="btn btn-anos" href="#home-{{k}}" aria-controls="home{{forloop.counter}}" role="tab" data-toggle="tab">{{k}}</a>
+                    <a class="btn btn-anos" href="#home-{{k}}" aria-controls="home{{forloop.counter}}" role="tab" data-toggle="tab">{{k}}- fam({{v.5}})</a>
                  </li>
               {% endfor %}
 
@@ -312,18 +312,18 @@ $('#container4-{{key}}').highcharts({
                     <div class="container">
                         <div class="row fila-grafico1">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
-                                <div class="grafico-ind"  id="container-{{k}}" style="min-width: 310px; height: 400px; width: 550px; margin: 0 auto"></div>
+                                <div class="grafico-ind"  id="container-{{k}}" width="100%"></div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
-                                <div class="grafico-ind" id="container1-{{k}}" style="min-width: 310px; height: 400px; width: 550px; margin: 0 auto"></div>
+                                <div class="grafico-ind" id="container1-{{k}}" width="100%"></div>
                             </div>
                         </div>
                         <div class="row fila-grafico">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
-                                <div class="grafico-ind" id="container2-{{k}}" style="min-width: 310px; height: 400px; width: 550px; margin: 0 auto"></div>
+                                <div class="grafico-ind" id="container2-{{k}}" width="100%"></div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
-                                <div class="grafico-ind" id="container3-{{k}}" style="min-width: 310px; height: 400px; width: 550px; margin: 0 auto"></div>
+                                <div class="grafico-ind" id="container3-{{k}}" width="100%"></div>
                             </div>
                         </div>
                         <div class="row fila-grafico">

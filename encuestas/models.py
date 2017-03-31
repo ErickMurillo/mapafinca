@@ -34,7 +34,7 @@ CHOICE_DUENO_NO = (
                 (1, 'Arrendada'),
                 (2, 'Promesa de venta'),
                 (3, 'Prestada'),
-                (4, 'Tierra Indígena'),
+                (4, 'Tierra Indígena/Comunal'),
                 (5, 'Sin escritura'),
                 (6, 'Colectivo/Cooperativa'),
               )
@@ -78,20 +78,22 @@ class Encuestadores(models.Model):
 
 class OrganizacionResp(models.Model):
     nombre = models.CharField(max_length=250)
-    pais = models.ForeignKey(Pais)
+    pais = models.ForeignKey(Pais, null=True)
     departamento = ChainedForeignKey(
         Departamento,
         chained_field="pais",
         chained_model_field="pais",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        null=True
     )
     municipio = ChainedForeignKey(
         Municipio,
         chained_field="departamento",
         chained_model_field="departamento",
         show_all=False,
-        auto_choose=True
+        auto_choose=True,
+        null=True
     )
 
     def __unicode__(self):
@@ -104,7 +106,7 @@ class OrganizacionResp(models.Model):
 
 class Entrevistados(models.Model):
     nombre = models.CharField('Nombre Completo', max_length=250)
-    cedula = models.CharField('No. Cédula', max_length=50, null=True, blank=True)
+    cedula = models.CharField('No. Cédula/DPI', max_length=50, null=True, blank=True)
     ocupacion = models.CharField('Ocupación', max_length=150)
     sexo = models.IntegerField(choices=CHOICE_SEXO)
     jefe = models.IntegerField(choices=CHOICE_JEFE, verbose_name='Jefe del hogar')
@@ -155,10 +157,12 @@ class Entrevistados(models.Model):
         verbose_name = 'Base de datos Productor'
         verbose_name_plural = 'Base de datos Productores'
 
+CHOICES_ESTACIONES = ((1, 'Verano'),(2, 'Invierno'),)
 
 class Encuesta(models.Model):
     entrevistado = models.ForeignKey(Entrevistados)
     fecha = models.DateField()
+    estacion = models.IntegerField(choices=CHOICES_ESTACIONES, default='1')
     encuestador = models.ForeignKey(Encuestadores)
     mapa_finca = ImageField(upload_to='mapas_fincas', null=True, blank=True)
     dueno = models.IntegerField(choices=CHOICE_JEFE,
@@ -456,7 +460,7 @@ class OrganizacionFinca(models.Model):
 
 CHOICE_TIERRA = (
         (1,'Bosque'),
-        (2,'Tacotal'),
+        (2,'Tacotal/Guamil/Machorra/Llano'),
         (3,'Cultivo anual'),
         (4,'Plantación forestal'),
         (5,'Potrero'),
@@ -532,6 +536,11 @@ CHOICE_PERIODO = (
                 (2, 'Postrera'),
                 )
 
+CHOICE_INICIATIVAS = (
+                (1, 'Si'),
+                (2, 'No'),
+                )
+
 
 class Cultivos(models.Model):
     codigo = models.CharField(max_length=4)
@@ -542,7 +551,7 @@ class Cultivos(models.Model):
 
 
     def __unicode__(self):
-        return u'%s-%s' % (self.codigo, self.nombre)
+        return u'%s - %s - %s' % (self.codigo, self.nombre, self.get_unidad_medida_display())
 
 class TipoMercado(models.Model):
     codigo = models.CharField(max_length=4)
@@ -565,6 +574,7 @@ class CultivosTradicionales(models.Model):
     costo = models.FloatField('Costo por Mz en C$')
     mercado = models.ForeignKey(TipoMercado)
     periodo = models.IntegerField(choices=CHOICE_PERIODO)
+    iniciativas = models.IntegerField(choices=CHOICE_INICIATIVAS, null=True, blank=True)
 
     total = models.FloatField(editable=False)
 
@@ -589,7 +599,7 @@ class CultivosHuertos(models.Model):
     proteinas = models.FloatField(null=True, blank=True)
 
     def __unicode__(self):
-        return u'%s-%s' % (self.codigo, self.nombre)
+        return u'%s - %s - %s' % (self.codigo, self.nombre, self.get_unidad_medida_display())
 
 
 class CultivosHuertosFamiliares(models.Model):
@@ -603,6 +613,7 @@ class CultivosHuertosFamiliares(models.Model):
     precio = models.FloatField('Precio de venta en C$')
     #costo = models.FloatField('Costo por Mz en C$')
     mercado = models.ForeignKey(TipoMercado)
+    iniciativas = models.IntegerField(choices=CHOICE_INICIATIVAS, null=True, blank=True)
 
     total = models.FloatField(editable=False)
 
@@ -636,7 +647,7 @@ class CultivosFrutas(models.Model):
     proteinas = models.FloatField(null=True, blank=True)
 
     def __unicode__(self):
-        return u'%s-%s' % (self.codigo, self.nombre)
+        return u'%s - %s - %s' % (self.codigo, self.nombre, self.get_unidad_medida_display())
 
 
 class CultivosFrutasFinca(models.Model):
@@ -650,6 +661,7 @@ class CultivosFrutasFinca(models.Model):
     precio = models.FloatField('Precio de venta en C$')
     #costo = models.FloatField('Costo por Mz en C$')
     mercado = models.ForeignKey(TipoMercado)
+    iniciativas = models.IntegerField(choices=CHOICE_INICIATIVAS, null=True, blank=True)
 
     total = models.FloatField(editable=False)
 
@@ -688,6 +700,7 @@ class Ganaderia(models.Model):
     cantidad_vendida = models.IntegerField('Cantidad vendida este año', null=True, blank=True)
     precio = models.FloatField('Precio de venta en C$', null=True, blank=True)
     mercado = models.ForeignKey(TipoMercado, null=True, blank=True)
+    iniciativas = models.IntegerField(choices=CHOICE_INICIATIVAS, null=True, blank=True)
 
     total = models.FloatField(editable=False, null=True, blank=True)
 
@@ -712,7 +725,7 @@ class ProductoProcesado(models.Model):
     proteinas = models.FloatField(null=True, blank=True)
 
     def __unicode__(self):
-        return u'%s-%s' % (self.codigo, self.nombre)
+        return u'%s - %s - %s' % (self.codigo, self.nombre, self.get_unidad_medida_display())
 
 
 class Procesamiento(models.Model):
@@ -723,6 +736,7 @@ class Procesamiento(models.Model):
     cantidad_vendida = models.IntegerField('Cantidad vendida este año')
     precio = models.FloatField('Precio de venta en C$')
     mercado = models.ForeignKey(TipoMercado)
+    iniciativas = models.IntegerField(choices=CHOICE_INICIATIVAS, null=True, blank=True)
 
     total = models.FloatField(editable=False)
 
@@ -942,6 +956,8 @@ CHOICE_FENOMENOS = (
 CHOICE_AGRICOLA = (
             ('A','Falta de semilla'),
             ('B','Mala calidad de la semilla'),
+            ('C','Falta de riego'),
+            ('D','Poca Tierra'),
         )
 CHOICE_MERCADO = (
             ('A','Bajo precio'),
@@ -1034,7 +1050,7 @@ CHOICER_INGRESO = (
 class Genero(models.Model):
     encuesta = models.ForeignKey(Encuesta)
     tipo = models.IntegerField(choices=CHOICER_INGRESO)
-    porcentaje = models.FloatField(choices=CHOICE_PORCENTAJE)
+    porcentaje = models.IntegerField(choices=CHOICE_PORCENTAJE)
 
     class Meta:
         verbose_name_plural = '43_¿Qué porcentaje de ingreso es aportado por la mujer (compañera del jefe del hogar)'

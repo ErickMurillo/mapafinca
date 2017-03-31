@@ -20,7 +20,7 @@ INSTALLED_APPS = (
     'multiselectfield',
     'selectable',
     'sorl.thumbnail',
-    'endless_pagination',
+    'el_pagination',
     #'debug_toolbar',
     'import_export',
 )

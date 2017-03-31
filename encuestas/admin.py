@@ -36,7 +36,7 @@ class InlinePanelSolar(admin.TabularInline):
     #form = TipoEnergiaForm
     model = PanelSolar
     extra = 1
-    max_num = 1
+    max_num = 3
 
 class InlineEnergiaSolarCocinar(admin.TabularInline):
     form = EnergiaSolarCocinarForm
@@ -209,7 +209,7 @@ class InlineGenero4(admin.TabularInline):
 
 class AdminEncuesta(admin.ModelAdmin):
     form = ProductorAdminForm
-    fields = (('entrevistado','fecha','encuestador'),'mapa_finca', 'org_responsable','dueno',)
+    fields = (('entrevistado','fecha','estacion'),('encuestador','mapa_finca'), 'org_responsable','dueno',)
     def queryset(self, request):
         if request.user.is_superuser:
             return Encuesta.objects.all()
@@ -236,13 +236,13 @@ class AdminEncuesta(admin.ModelAdmin):
                 InlineGenero,InlineGenero1,InlineGenero2,InlineGenero3,InlineGenero4,]
 
     list_display = ('entrevistado','dueno','org_responsable','get_municipio','get_comunidad' ,'year')
-    list_filter = ('org_responsable','year','entrevistado__departamento__municipio', 'entrevistado__departamento__municipio__comunidad')
+    list_filter = ('org_responsable','year','entrevistado__pais','entrevistado__pais__departamento')
     search_fields = ('entrevistado__nombre',)
 
     def get_departamento(self, obj):
         return obj.entrevistado.departamento
     get_departamento.short_description = 'Departamento'
-    get_departamento.admin_order_field = 'entrevistado__departamento'
+    #get_departamento.admin_order_field = 'entrevistado__departamento'
 
     def get_municipio(self, obj):
         return obj.entrevistado.municipio

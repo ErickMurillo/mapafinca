@@ -4,10 +4,28 @@
     	<li>PAÍS: <strong>{{request.session.pais|upper}}</strong></li>
     {% endif %}
     {% if request.session.departamento %}
-    	<li>DEPARTAMENTO: <strong>{{request.session.departamento|upper}}</strong></li>
+    	<li>DEPARTAMENTO:  {% for depart in request.session.departamento %}
+    	                       <strong>{{depart|upper}}</strong> {% if forloop.last %}{% else %},{% endif %}
+    	                    {% endfor %}</li>
+    {% endif %}
+    {% if request.session.municipio %}
+    	<li>MUNICIPIO:  {% for muni in request.session.municipio %}
+    	                       <strong>{{muni|upper}}</strong> {% if forloop.last %}{% else %},{% endif %}
+    	                    {% endfor %}</li>
+    {% endif %}
+    {% if request.session.comunidad %}
+    	<li>COMUNIDAD:  {% for comu in request.session.comunidad %}
+    	                       <strong>{{comu|upper}}</strong> {% if forloop.last %}{% else %},{% endif %}
+    	                    {% endfor %}</li>
     {% endif %}
     {% if request.session.encuestados %}
-        <li>NÚMERO DE ENTREVISTADO: <strong>{{request.session.encuestados|upper}}</strong></li>	
+        <li>NÚMERO DE ENCUESTAS: <strong>{{request.session.encuestados|upper}}</strong></li>
+    {% endif %}
+    {% if request.session.hombres %}
+        <li>% HOMBRES JEFES: <strong>{{request.session.hombres|upper}}</strong></li>
+    {% endif %}
+    {% if request.session.mujeres %}
+        <li>% MUJERES JEFES: <strong>{{request.session.mujeres|upper}}</strong></li>
     {% endif %}
     </ol>
 </div>

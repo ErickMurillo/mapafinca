@@ -3,18 +3,208 @@
 {% block extra_js %}
 <script src="/static/js/modernizr.custom.js"></script>
 <script src="/static/js/classie.js"></script>
-<script src="/static/js/uiMorphingButton_fixed.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap-multiselect.js"></script>
 <script type="text/javascript">
 		$(document).ready(function() {
-				$('#example-getting-started').multiselect();
-				$('#id_fecha').multiselect();
-				$('#id_organizacion').multiselect();
+				$('#id_estacion').multiselect();
 				$('#id_pais').multiselect();
-				$('#id_departamento').multiselect();
-				$('#id_municipio').multiselect();
-				$('#id_comunidad').multiselect();
-		});
+				//$('#id_departamento').multiselect();
+				//$('#id_municipio').multiselect();
+				//$('#id_comunidad').multiselect();
+
+				$('#id_departamento').multiselect({
+					 //buttonWidth: '250px',
+					 maxHeight: 250,
+					 includeSelectAllOption: true,
+					 selectAllText: 'Seleccionar todos',
+					 buttonText: function(options, select) {
+							 if (options.length === 0) {
+									 return 'Sin selección ...';
+							 }
+							 else if (options.length > 3) {
+									 return 'Varias opciones seleccionadas!';
+							 }
+								else {
+										var labels = [];
+										options.each(function() {
+												if ($(this).attr('label') !== undefined) {
+														labels.push($(this).attr('label'));
+												}
+												else {
+														labels.push($(this).html());
+												}
+										});
+										return labels.join(', ') + '';
+								}
+					 }
+	 		 });
+
+			 $('#id_organizacion').multiselect({
+        //buttonWidth: '250px',
+        maxHeight: 250,
+        includeSelectAllOption: true,
+        selectAllText: 'Seleccionar todos',
+        buttonText: function(options, select) {
+                if (options.length === 0) {
+                    return 'Sin selección ...';
+                }
+                else if (options.length > 3) {
+                    return 'Varias opciones seleccionadas!';
+                }
+                 else {
+                     var labels = [];
+                     options.each(function() {
+                         if ($(this).attr('label') !== undefined) {
+                             labels.push($(this).attr('label'));
+                         }
+                         else {
+                             labels.push($(this).html());
+                         }
+                     });
+                     return labels.join(', ') + '';
+                 }
+            }
+    });
+
+		$('#id_municipio').multiselect({
+			 enableCollapsibleOptGroups: true,
+			 //buttonWidth: '250px',
+			 maxHeight: 250,
+			 includeSelectAllOption: true,
+			 selectAllText: 'Seleccionar todos',
+			 buttonText: function(options, select) {
+					 if (options.length === 0) {
+							 return 'Sin selección ...';
+					 }
+					 else if (options.length > 3) {
+							 return 'Varias opciones seleccionadas!';
+					 }
+						else {
+								var labels = [];
+								options.each(function() {
+										if ($(this).attr('label') !== undefined) {
+												labels.push($(this).attr('label'));
+										}
+										else {
+												labels.push($(this).html());
+										}
+								});
+								return labels.join(', ') + '';
+						}
+			 }
+	 });
+
+	 $('#id_comunidad').multiselect({
+			enableCollapsibleOptGroups: true,
+			//buttonWidth: '250px',
+			maxHeight: 250,
+			includeSelectAllOption: true,
+			selectAllText: 'Seleccionar todos',
+			buttonText: function(options, select) {
+					if (options.length === 0) {
+							return 'Sin selección ...';
+					}
+					else if (options.length > 3) {
+							return 'Varias opciones seleccionadas!';
+					}
+					 else {
+							 var labels = [];
+							 options.each(function() {
+									 if ($(this).attr('label') !== undefined) {
+											 labels.push($(this).attr('label'));
+									 }
+									 else {
+											 labels.push($(this).html());
+									 }
+							 });
+							 return labels.join(', ') + '';
+					 }
+			}
+	});
+	 $("#id_departamento").multiselect('disable');
+	 $("#id_municipio").multiselect('disable');
+	 $("#id_organizacion").multiselect('disable');
+	 $("#id_comunidad").multiselect('disable');
+
+
+	 var foopais = [];
+	 $(document).on('change','#id_pais',function(){
+
+	     $('#id_pais :selected').each(function(i, selected){
+	         foopais[i] = $(selected).val();
+	     });
+	     $.getJSON('/ajax/depart/?ids='+foopais.join(","), function(data){
+	         $('#id_departamento').html('');
+	         //$("#id_comunidad").prop("disabled", false);
+	 				$('#id_departamento').multiselect('enable');
+	         if(data){
+	             $.each(data, function(i, item){
+	                 $('#id_departamento').append($('<option></option>').val(item.id).html(item.nombre));
+	                 });
+	 								$('#id_departamento').multiselect('rebuild');
+	        }
+	    });
+	 });
+
+
+	var foo = [];
+	$(document).on('change','#id_departamento',function(){
+
+	    $('#id_departamento :selected').each(function(i, selected){
+	        foo[i] = $(selected).val();
+	    });
+	    $.getJSON('/ajax/munis/?ids='+foo.join(","), function(data){
+	        $('#id_municipio').html('');
+	        $('#id_municipio').multiselect('enable');
+	        var municipio = $('#id_municipio')
+	        if(data){
+	           $.each(data, function(i, item){
+	            $.each(item, function(j, item2){
+	                var group = $('<optgroup></optgroup>').attr('label', j);
+	                $.each(item2, function(k, item3){
+	                    group.append($('<option></option>').val(item3.id).html(item3.nombre));
+	                });
+	                group.appendTo(municipio);
+	                $('#id_municipio').multiselect('rebuild');
+	            });
+	        });
+	       }
+	   });
+		 $.getJSON('/ajax/organi/?ids='+foo.join(","), function(data){
+        $('#id_organizacion').html('');
+        //$("#id_organizacion").prop("disabled", false);
+				$('#id_organizacion').multiselect('enable');
+        if(data){
+            $.each(data, function(i, item){
+                $('#id_organizacion').append($('<option></option>').val(item.id).html(item.nombre));
+                });
+								$('#id_organizacion').multiselect('rebuild');
+       }
+   });
+	});
+
+
+var foo2 = [];
+$(document).on('change','#id_municipio',function(){
+
+    $('#id_municipio :selected').each(function(i, selected){
+        foo2[i] = $(selected).val();
+    });
+    $.getJSON('/ajax/comunies/?ids='+foo2.join(","), function(data){
+        $('#id_comunidad').html('');
+        //$("#id_comunidad").prop("disabled", false);
+				$('#id_comunidad').multiselect('enable');
+        if(data){
+            $.each(data, function(i, item){
+                $('#id_comunidad').append($('<option></option>').val(item.id).html(item.nombre));
+                });
+								$('#id_comunidad').multiselect('rebuild');
+       }
+   });
+});
+
+
+}); //fin del document
 
 </script>
 {% endblock extra_js %}
@@ -24,128 +214,99 @@
 .separador {
 	margin-left: 40px;
 }
-@media (min-width: 768px){
-	footer{
-		position: relative;
-		bottom: 0px;
-		width: 100%;
-	}
-}
-@media (min-width: 992px){
-	footer{
-		position: absolute;
-		bottom: 0px;
-		width: 100%;
-	}
-}
-@media (min-width: 1200px){
-	footer{
-		position: absolute;
-		bottom: 0px;
-		width: 100%;
-	}
-}
+footer{}
+
 </style>
-<div class="row filtro-index">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ind-tablero">
-		<div class="container">
-			<div class="row">
-
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 ind-org">
-					<div class="fondo">
-						<div class="row">
-
-							<div class="col-xs-6 col-sm-6 col-md-5 col-lg-5 numero">
-								{{organizaciones}}
-							</div>
-							<div class="col-xs-6 col-sm-6 col-md-7 col-lg-7 ind-text">
-								Organizaciones
-							</div>
-						</div>
-					</div>
-				</div>
-
-
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 ind-familia">
-					<div class="fondo">
-						<div class="row">
-							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 numero">
-								{{total_entrevistados}}
-							</div>
-							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ind-text">
-								Familias
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 ind-familia">
-					<div class="fondo">
-						<div class="row">
-							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 numero">
-								{{porcentaje_hombres|floatformat:1}}%
-							</div>
-							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ind-text">
-								Hombres
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 ind-familia">
-					<div class="fondo">
-						<div class="row">
-							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 numero">
-								{{porcentaje_mujeres|floatformat:1}}%
-							</div>
-							<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ind-text">
-								Mujeres
-							</div>
-						</div>
-					</div>
-				</div>
-
-
-		</div>
-		</div>
-
-	</div>
-</div>
+{% include "breadcrumb.html" %}
     <div class="row">
-			<div class="primer-indicador">
-			<div class="col-xs-3">
+		<div class="container-fluid primer-indicador">
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
 					<div class="row">
-				<form class="separador" action="." method="POST"> {% csrf_token %}
-					<div>
-						<label for="">{{form.pais.label}}</label>
-						{{form.pais}}
-					</div>
-					<div>
-						<label for="">{{form.departamento.label}}</label>
-						 {{form.departamento}}
-					</div>
-					<div>
-						<label for="">{{form.organizacion.label}}</label>
-						{{form.organizacion}}
-					</div>
-					<div>
-						<label for="">{{form.municipio.label}}</label>
-						 {{form.municipio}}
-					</div>
-					<div>
-						<label for="">{{form.comunidad.label}}</label>
-						 {{form.comunidad}}
-					</div>
-					<input type="submit" value="Consultar" class="btn btn-default" name="consulta"/>
+						<div class="panel panel-consulta">
+							<div class="panel-heading" >
+								<p>Consulta</p>
+							</div>
+							<div class="panel-body">
+								<form  action="." method="POST"> {% csrf_token %}
 
-					</form>
-				</div>
-				</div>
-			<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+											<label for="">{{form.estacion.label}}</label>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+											{{form.estacion}}
+										</div>
 
+									</div>
+
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+											<label for="">{{form.pais.label}}</label>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+											{{form.pais}}
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+											<label for="">{{form.departamento.label}}</label>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+											{{form.departamento}}
+										</div>
+
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+											<label for="">{{form.organizacion.label}}</label>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+											{{form.organizacion}}
+										</div>
+
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+											<label for="">{{form.municipio.label}}</label>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+											{{form.municipio}}
+										</div>
+
+
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+											<label for="">{{form.comunidad.label}}</label>
+										</div>
+										<div class="col-xs-12 col-sm-6 col-md-6 col-lg-8">
+											{{form.comunidad}}
+										</div>
+
+
+									</div>
+
+									<input type="submit" value="Consultar" class="btn btn-form" name="consulta"/>
+
+								</form>
+							</div>
+						</div>
+
+					</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-9">
+				{% if request.session.pais %}
 		    	{% include "menu_indicadores.html" %}
-
-    </div>
+				{% else %}
+					<p class="alert alert-success" role="alert">
+						Aun no ha realizado ninguna consulta, por favor en el formulario de la izquierda
+						realiace una consulta
+					</p>
+				{% endif %}
+    		</div>
 		</div>
 		</div>
 {% endblock contenido %}

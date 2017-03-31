@@ -8,6 +8,8 @@ class Pais(models.Model):
     slug = models.SlugField(unique=True, null=True, help_text="Usado como url unica(autorellenado)")
     codigo = models.CharField(max_length=2,
                 help_text='Código de 2 letras del país, ejemplo : Nicaragua (ni)')
+    latitud = models.DecimalField('Latitud', max_digits=8, decimal_places=5, blank=True, null=True)
+    longitud = models.DecimalField('Longitud', max_digits=8, decimal_places=5, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Países"

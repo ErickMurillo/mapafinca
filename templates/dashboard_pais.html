@@ -3,7 +3,7 @@
 {% block extra_js %}
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgFI1CguLRRS-jan8sFI8yB5TlmlqnIIY"></script>
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
 <script type="text/javascript" src="/static/js/infobox.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
@@ -57,8 +57,9 @@
 </script>
 <!-- estos son los graficos de clima y indicadores-->
 <script>
-    $(function () {
-    $('#grafico5').highcharts({
+{% for k,v in tiempo_clima.items %}
+$(function () {
+    $('#grafico5-{{k}}').highcharts({
         chart: {
             zoomType: 'xy'
         },
@@ -66,7 +67,7 @@
             text: 'CLIMA: temperatura promedio y precipitación '
         },
         subtitle: {
-            text: '{{request.session.departamento}}'
+            text: '{{request.session.departamento.0}}'
         },
         xAxis: [{
             categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
@@ -117,7 +118,7 @@
             name: 'precipitación',
             type: 'column',
             yAxis: 1,
-            data: [{% for obj in lista_precipitacion %} {{obj}},{% endfor %}],
+            data: [{% for obj in v.0 %} {{obj}},{% endfor %}],
             tooltip: {
                 valueSuffix: ' mm'
             }
@@ -125,24 +126,26 @@
         }, {
             name: 'Temperatura',
             type: 'spline',
-            data: [{% for obj in lista_temperatura %} {{obj}},{% endfor %}],
+            data: [{% for obj in v.1 %} {{obj}},{% endfor %}],
             tooltip: {
                 valueSuffix: '°C'
             }
         }]
     });
 });
+{% endfor %}
 /**********************************/
+{% for k, v in tiempo_patron_gasto.items %}
 $(function () {
-    $('#grafico1').highcharts({
+    $('#grafico1-{{k}}').highcharts({
         chart: {
             type: 'column'
         },
         title: {
-            text: 'PATRÓN DE GASTOS'
+            text: 'PATRÓN DE GASTOS - {{k}}'
         },
         xAxis: {
-            categories: ['Gasto en {{request.session.departamento}}']
+            categories: ['Verano', 'Invierno']
         },
         yAxis: {
             min: 0,
@@ -182,24 +185,26 @@ $(function () {
         },
         series: [{
             name: 'Alimentarios',
-            data: [{% if gasto_finca == None %}0 {%else%}{{gasto_finca|floatformat:2}},{% endif %}]
+            data: [{{v.0|floatformat:2}},{{v.1|floatformat:2}}]
         }, {
             name: 'No alimentarios',
-            data: [{% if gasto_fuera_finca == None %}0 {%else%}{{gasto_fuera_finca|floatformat:2}},{% endif %}]
+            data: [{{v.2|floatformat:2}},{{v.3|floatformat:2}}]
         }]
     });
 });
+{% endfor %}
 
+{% for k, v in tiempo_ingresos.items %}
 $(function () {
-    $('#grafico2').highcharts({
+    $('#grafico2-{{k}}').highcharts({
         chart: {
             type: 'column'
         },
         title: {
-            text: 'INGRESOS EN {{request.session.departamento}}'
+            text: 'INGRESOS EN {{request.session.departamento.0}}'
         },
         xAxis: {
-            categories: ['Gasto en {{request.session.departamento}}']
+            categories: ['Verano', 'Invierno']
         },
         yAxis: {
             min: 0,
@@ -240,29 +245,30 @@ $(function () {
         series: [
             {
                 name: "Cultivos tradicionales",
-                data: [{% if tradicional == None %}0 {%else%}{{tradicional|floatformat:2}},{% endif %}]
+                data: [{{v.0|floatformat:2}},{{v.1|floatformat:2}}]
             }, {
                 name: "Cultivos huertos",
-                data: [{% if huertos == None %}0 {%else%}{{huertos|floatformat:2}},{% endif %}]
+                data: [{{v.2|floatformat:2}},{{v.3|floatformat:2}}]
             }, {
                 name: "Frutales",
-                data: [{% if frutas == None %}0 {%else%}{{frutas|floatformat:2}},{% endif %}]
+                data: [{{v.4|floatformat:2}},{{v.5|floatformat:2}}]
             }, {
                 name: "Otras fuentes",
-                data: [{% if fuente == None %}0 {%else%}{{fuente|floatformat:2}},{% endif %}]
+                data: [{{v.6|floatformat:2}},{{v.7|floatformat:2}}]
             }, {
                 name: "Ganado",
-                data: [{% if ganado == None %}0 {%else%}{{ganado|floatformat:2}},{% endif %}]
+                data: [{{v.8|floatformat:2}},{{v.9|floatformat:2}}]
             }, {
                 name: "Procesamientos",
-                data: [{% if procesamiento == None %}0 {%else%}{{procesamiento|floatformat:2}}{% endif %}]
+                data: [{{v.10|floatformat:2}},{{v.11|floatformat:2}}]
         }]
     });
 });
+{% endfor %}
 
-
+{% for k,v in tiempo_kcalorias.items %}
 $(function () {
-    $('#grafico3').highcharts({
+    $('#grafico3-{{k}}').highcharts({
         chart: {
             type: 'column'
         },
@@ -270,7 +276,7 @@ $(function () {
             text: 'Consumo en Kilocalorias'
         },
         xAxis: {
-            categories: ['calorias {{request.session.departamento}}']
+            categories: ['Verano', 'Invierno']
         },
         yAxis: {
             min: 0,
@@ -309,18 +315,29 @@ $(function () {
             }
         },
         series: [
-        {% for k,v in kcalorias.items %}
             {
-                name: '{{k}}',
-                data: [{% if v == None %}0 {%else%}{{v|floatformat:2}},{% endif %}]
-            },
-        {% endfor %}
-        ]
+                name: "kcal cultivos tradicionales",
+                data: [{{v.0.0|floatformat:2}},{{v.1.0|floatformat:2}}]
+            }, {
+                name: "kcal cultivos huertos",
+                data: [{{v.0.1|floatformat:2}},{{v.1.1|floatformat:2}}]
+            }, {
+                name: "kcal frutales",
+                data: [{{v.0.2|floatformat:2}},{{v.1.2|floatformat:2}}]
+            }, {
+                name: "kcal procesados",
+                data: [{{v.0.3|floatformat:2}},{{v.1.3|floatformat:2}}]
+            }, {
+                name: "kcal fuera de la finca",
+                data: [{{v.0.4|floatformat:2}},{{v.1.4|floatformat:2}}]
+            }]
     });
 });
+{% endfor %}
 
+{% for k,v in tiempo_gastos_alimentarios.items %}
 $(function () {
-    $('#grafico4').highcharts({
+    $('#grafico4-{{k}}').highcharts({
         chart: {
             type: 'column'
         },
@@ -328,7 +345,7 @@ $(function () {
             text: 'GASTOS ALIMENTARIOS'
         },
         xAxis: {
-            categories: ['Gasto alimentarios {{request.session.departamento}}']
+            categories: ['Verano', 'Invierno']
         },
         yAxis: {
             min: 0,
@@ -367,18 +384,20 @@ $(function () {
             }
         },
         series: [
-        {% for k,v in gastos_alimentarios.items %}
+        {% for key,value in v.items %}
           {
-            name: '{{k}}',
-            data: [{{v|floatformat:2}}]
+            name: '{{key}}',
+            data: [{{value.0|floatformat:2}},{{value.1|floatformat:2}}]
         },
         {% endfor %}
         ]
     });
 });
-$(function () {
+{% endfor %}
 
-    $('#arana').highcharts({
+{% for k,v in tiempo_arana.items %}
+$(function () {
+    $('#arana-{{k}}').highcharts({
 
         chart: {
             polar: true,
@@ -420,24 +439,70 @@ $(function () {
 
         series: [{
             name: 'Jefe de hogar hombre',
-            data: [{{capital_natural_hombre}}, {{capital_social_hombre}}, {{capital_financiero_hombre}}, {{capital_fisico_hombre}}, {{capital_humano_hombre}}],
+            data: [{{v.0}}, {{v.3}}, {{v.6}}, {{v.9}}, {{v.12}}],
             pointPlacement: 'on'
         }, {
             name: 'Jefe de hogar mujer',
-            data: [{{capital_natural_mujer}}, {{capital_social_mujer}}, {{capital_financiero_mujer}}, {{capital_fisico_mujer}}, {{capital_humano_mujer}}],
+            data: [{{v.1}}, {{v.4}}, {{v.7}}, {{v.10}}, {{v.13}}],
             pointPlacement: 'on'
         }, {
             name: 'Ambos',
-            data: [{{capital_natural_ambos}}, {{capital_social_ambos}}, {{capital_financiero_ambos}}, {{capital_fisico_ambos}}, {{capital_humano_ambos}}],
-            pointPlacement: 'on'
-        }, {
-            name: 'Mujer no jefa de hogar',
-            data: [0, 0, 0, 0, 0],
+            data: [{{v.2}}, {{v.5}}, {{v.8}}, {{v.11}}, {{v.14}}],
             pointPlacement: 'on'
         }]
 
     });
 });
+{% endfor %}
+//rendimientos
+{% for k,v in tiempo_rendimiento.items %}
+$(function () {
+    $('#rendimientos1-{{k}}').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'RENDIMIENTOS'
+        },
+        subtitle: {
+            text: 'de frijol, maíz'
+        },
+        xAxis: {
+            categories: ['Verano', 'Invierno'],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Rendimiento (qq)'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} qq</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Frjol',
+            data: [{{v.2}},{{v.3}}]
+
+        }, {
+            name: 'Maiz',
+            data: [{{v.0}},{{v.1}}]
+
+        }]
+    });
+});
+{% endfor %}
 </script>
 {% endblock extra_js %}
 
@@ -459,7 +524,7 @@ $(function () {
                 {# mapa #}
                 <div id="map-canvas"></div>
 
-                <!-- <a class='btn btn-tgeneral center-block' href="/indicadores1/">TABLERO DE INDICADORES</a> -->
+                <a class='btn btn-tgeneral center-block' href="/indicadores1/">TABLERO DE INDICADORES</a>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6  ">
@@ -500,54 +565,54 @@ $(function () {
         </div>
     </div>
 
-<!--            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <div class="grafico-indicador" >
-                        <div class="titulo-grafico text-right">
-                            <a href="#">Ver detalle</a>
-                        </div>
-                        <div id="grafico1" style="height: 270px;"></div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <div class="grafico-indicador" >
-                        <div class="titulo-grafico text-right">
-                            <a href="#">Ver detalle</a>
-                        </div>
-                        <div id="grafico2" style="height: 270px;"></div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <div class="grafico-indicador" >
-                        <div class="titulo-grafico text-right">
-                            <a href="#">Ver detalle</a>
-                        </div>
-                        <div id="grafico3" style="height: 270px;"></div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <div class="grafico-indicador" >
-                        <div class="titulo-grafico text-right">
-                            <a href="#">Ver detalle</a>
-                        </div>
-                        <div id="grafico4" style="height: 270px;"></div>
-                    </div>
-                </div>
-            </div>
--->
     <div class="row fila3">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
             <div class="mapa-general ">
-                <div id="grafico1"></div>
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_patron_gasto.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#patron-{{k}}" aria-controls="patron-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              <li role="presentation"><a target="_blank" href="/infografias/info-patron-gasto-pais/">Infografía</a></li>
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_patron_gasto.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="patron-{{k}}">
+                    <div id="grafico1-{{k}}"></div>
+                </div>
+              {% endfor %}
+              </div>
+
+            </div>
             </div>
         </div>
          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
             <div class="mapa-general ">
-                <div id="grafico2"></div>
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_ingresos.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#ingreso-{{k}}" aria-controls="ingreso-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              <li role="presentation"><a target="_blank" href="/infografias/info-ingresos-pais/">Infografía</a></li>
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_ingresos.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="ingreso-{{k}}">
+                    <div id="grafico2-{{k}}"></div>
+                </div>
+              {% endfor %}
+
+              </div>
+
+            </div>
             </div>
         </div>
 
@@ -556,12 +621,49 @@ $(function () {
     <div class="row fila3">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
             <div class="mapa-general ">
-                <div id="grafico3"></div>
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_kcalorias.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#calorias-{{k}}" aria-controls="calorias-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              <li role="presentation"><a target="_blank" href="/infografias/info-kcal-pais/">Infografía</a></li>
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_kcalorias.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="calorias-{{k}}">
+                    <div id="grafico3-{{k}}"></div>
+                </div>
+              {% endfor %}
+              </div>
+
+            </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
             <div class="mapa-general ">
-                <div id="grafico4"></div>
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_gastos_alimentarios.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#alimentarios-{{k}}" aria-controls="alimentarios-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_gastos_alimentarios.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="alimentarios-{{k}}">
+                    <div id="grafico4-{{k}}"></div>
+                </div>
+              {% endfor %}
+              </div>
+
+            </div>
             </div>
         </div>
 
@@ -570,12 +672,75 @@ $(function () {
     <div class="row fila3">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
             <div class="mapa-general ">
-                <div id="arana"></div>
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_arana.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#aranaa-{{k}}" aria-controls="aranaa-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_arana.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="aranaa-{{k}}">
+                    <div id="arana-{{k}}"></div>
+                </div>
+              {% endfor %}
+              </div>
+
+            </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
             <div class="mapa-general ">
-                <div id="grafico5"></div>
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_clima.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#clima-{{k}}" aria-controls="clima-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_clima.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="clima-{{k}}">
+                    <div id="grafico5-{{k}}"></div>
+                </div>
+              {% endfor %}
+              </div>
+
+            </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row fila3">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 ">
+            <div class="mapa-general ">
+                <div>
+
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+              {% for k, v in tiempo_rendimiento.items %}
+                <li role="presentation" {% if forloop.counter == 1 %}class="active"{% endif %} ><a href="#rendimiento-{{k}}" aria-controls="rendimiento-{{k}}" role="tab" data-toggle="tab">{{k}}</a></li>
+              {% endfor %}
+              <li role="presentation"><a target="_blank" href="/infografias/info-rendimientos-pais/">Infografía</a></li>
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+              {% for k, v in tiempo_rendimiento.items %}
+                <div role="tabpanel" class="tab-pane {% if forloop.counter == 1 %}active{% endif %}" id="rendimiento-{{k}}">
+                    <div id="rendimientos1-{{k}}"></div>
+                </div>
+              {% endfor %}
+              </div>
+
+            </div>
             </div>
         </div>
 

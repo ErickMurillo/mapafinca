@@ -83,24 +83,24 @@
                             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                                 <ol class="breadcrumb">
                                     <li>
-                                        Indicador  
+                                        Indicador
                                     </li>
                                     <li>
                                         Uso de Tierra
                                     </li>
-                                    
+
                                 </ol>
                             </div>
                             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <span class="ver-indicador" >
-                                    
+
                                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                         Ver más indicadores <span class="fa fa-search"></span>
                                     </a>
                                 </span>
                             </div>
                         </div>
-                        
+
 
                     </h4>
                  </div>
@@ -119,7 +119,7 @@
                {% for k,v in dicc_tierra.items %}
 
                  <li class="col-xs-6 col-sm-4 col-md-2 col-lg-2 {% if forloop.counter == 1 %}active{% endif %}" role="presentation">
-                    <a class="btn btn-anos" href="#home-{{k}}" aria-controls="home{{forloop.counter}}" role="tab" data-toggle="tab">{{k}}</a>
+                    <a class="btn btn-anos" href="#home-{{k}}" aria-controls="home{{forloop.counter}}" role="tab" data-toggle="tab">{{k}}- fam({{v.5}})</a>
                  </li>
               {% endfor %}
 
@@ -135,13 +135,13 @@
                 <div class="container">
                     <div class="row fila-grafico1">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 space">
-                            <div class="grafico-ind" id="container-{{k}}" style="min-width: 310px; height: 400px; width: 1000px; margin: 0 auto;"></div>
+                            <div class="grafico-ind" id="container-{{k}}" width='100%'></div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
                                 <div class="excel">
-                                    <a href="#" onclick="exportarXLS('modalidad'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
+                                    <a href="#" onclick="exportarXLS('modalidad-{{k}}'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
                                 </div>
-                            <div class="table-responsive" id="modalidad">
+                            <div class="table-responsive" id="modalidad-{{k}}">
                                 <table class="table table-bordered table-hover">
                                     <caption>Promedio en Mz: {{v.3|floatformat:2}} Mz</caption>
                                     <thead>
@@ -167,9 +167,9 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
                             <div class="excel">
-                                <a href="#" onclick="exportarXLS('modalidad1'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
+                                <a href="#" onclick="exportarXLS('modalidad1-{{k}}'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
                             </div>
-                             <div class="table-responsive" id="modalidad1">
+                             <div class="table-responsive" id="modalidad1-{{k}}">
                                 <table class="table table-bordered table-hover">
                                     <caption>Promedio en Mz: {{v.3|floatformat:2}} Mz</caption>
                                     <thead>
@@ -206,7 +206,7 @@
             {% endfor %}
         </div><!-- role tabpanel -->
     </div>
-      
+
 
 </div> <!-- fin container -->
 {% endblock contenido %}

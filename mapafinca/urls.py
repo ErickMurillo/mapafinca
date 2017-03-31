@@ -20,6 +20,7 @@ import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from encuestas import urls as encuestas_urls
+from clima import urls as climas_urls
 from django.views.generic import TemplateView
 
 admin.site.site_header = "administración"
@@ -27,6 +28,7 @@ admin.site.site_title = "sitio administrativo"
 
 urlpatterns = [
     url(r'', include(encuestas_urls)),
+    url(r'^infografias/', include(climas_urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^chaining/', include('smart_selects.urls')),
     url(r'^selectable/', include('selectable.urls')),

@@ -1,0 +1,171 @@
+
+
+{% load helpertags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/static/img/cafodlogo.ico" />
+    <title>Mapa de Fincas</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/infografias/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.css">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+</head>
+<body>
+    <div class="titulo-patron">
+        <img class="center-block" class="center-block" src="/static/img/infografias/Recurso7.png" alt="">
+    </div>
+    <div class="detalle-patron">
+        <div class="container">
+            <ul class="lista">
+                <li>
+                    <img class="pais" src="/static/img/infografias/{{pais}}.png" alt="">
+                    <h4>
+                        {{pais}}
+                    </h4>
+                </li>
+                <span class="separador">/</span>
+                <li>
+                    <img class="familia" src="/static/img/infografias/Familias_Encuestadas.png" alt="">
+                    <h4>{{total}} Familias</h4>
+                </li>
+                <span class="separador">/</span>
+                <li>
+                    <img class="hombre " src="/static/img/infografias/Jefe_Masculino.png" alt="">
+                    <h4>{{hombres|floatformat:2}}% Jefe Masculino</h4>
+                </li>
+                <span class="separador">/</span>
+                <li>
+                    <img class="mujer " src="/static/img/infografias/Jefe_Fememnino.png" alt="">
+                    <h4>{{mujeres|floatformat:2}}% Jefe Femenino</h4>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+                
+    <div class="container titulo-temporada">
+       <div class="row">
+           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+               <h4 class="r-title"> <span>Verano</span></h4>
+           </div>
+           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+               <h4 class="r-title"><span>Invierno</span></h4>
+           </div>
+       </div>
+   </div>
+        {% for k,v in tiempo_patron_gasto.items %}
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 bg-r3">
+                        <div class="row">
+
+                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                <p class="t-alimentario"><span>ALIMENTARIO</span></p>
+                                <p class="d-maiz"><!--{{v.0|floatformat:2}}--> {% calculaperct3 v.0 v.2 %} %</p>
+                               <img class="center-block" src="/static/img/infografias/Recurso3.png" alt=""> 
+                            </div>
+                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                <p class="t-noalimentario"><span>NO ALIMENTARIO</span></p>
+                                <p class="d-frijol"><!--{{v.2|floatformat:2}}--> {% calculaperct3 v.2 v.0 %} %</p>
+
+                                <img class="center-block" src="/static/img/infografias/Recurso1.png" alt=""> 
+                            </div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 sin-padding">
+                        <div class="r-year2">{{k}}</div>
+                    </div>
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 bg-r4">
+                        <div class="row">
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                
+                            </div>
+                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                <p class="t-noalimentario"><span>NO ALIMENTARIO</span></p>
+                                <p class="d-frijol2"><!--{{v.3|floatformat:2}}--> {% calculaperct3 v.3 v.1 %} %</p>
+
+                                <img class="center-block" src="/static/img/infografias/Recurso1.png" alt=""> 
+                            </div>
+                            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                <p class="t-alimentario"><span>ALIMENTARIO</span></p>
+                                <p class="d-maiz2"><!--{{v.1|floatformat:2}}--> {% calculaperct3 v.1 v.3 %} %</p>
+                               <img class="center-block" src="/static/img/infografias/Recurso3.png" alt=""> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <!--<div class="row">
+                <div class="table-responsive">
+                    <table class="table">
+                        <caption>{{k}}</caption>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Alimentarios</th>
+                                <th>No alimentarios</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Verano</td>
+                                <td>{{v.0|floatformat:2}} ({% calculaperct3 v.0 v.2 %}) % al</td>
+                                <td>{{v.2|floatformat:2}} ({% calculaperct3 v.2 v.0 %}) % na</td>
+                            </tr>
+                            <tr>
+                                <td>Invierno</td>
+                                <td>{{v.1|floatformat:2}} ({% calculaperct3 v.1 v.3 %}) % al</td>
+                                <td>{{v.3|floatformat:2}} ({% calculaperct3 v.3 v.1 %}) % na</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>-->
+            
+        {% endfor %}
+ 
+    <nav class="navbar navbar-default menu" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand logo hidden-sm" href="/">
+                    <img src="/static/img/logo-01.png" alt="">
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav anclas">
+
+                    <li class="t-sistema hidden-md hidden-sm hidden-xs"><a >SISTEMA DE MONITOREO DE FINCA</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right anclas-2">
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </nav>
+</body>
+</html>

@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load thumbnail %}
-{% load endless %}
+{% load el_pagination_tags %}
 {% block extra_js %}
+	<script type="text/javascript" src="/static/js/bootstrap-multiselect.js"></script>
 	<link type="text/css" rel="stylesheet" href="/static/css/lightGallery.css" />
 	<link type="text/css" rel="stylesheet" href="/static/css/galeria.css" />                       
 	<script src="/static/js/lightGallery.js"></script>
+
 	
 <script type="text/javascript">
 $(document).ready(function() {
@@ -19,7 +21,10 @@ $(document).ready(function() {
     });
     
 });
-
+$( "#id_fecha" ).addClass( "form-control" );
+$( "#id_pais" ).addClass( "form-control" );
+$( "#id_organizacion" ).addClass( "form-control" );
+$('#id_organizacion').multiselect();
 </script>
 <script>
 
@@ -59,7 +64,32 @@ if (n<12) {
 	}
 }	
 </style>
+<div class="row filtro-index">
+	<div class="container">
+		<form class="form-inline" action="." method="POST"> {% csrf_token %}
+		
+		 	<div class="form-group">
+			    <label for="">{{form.fecha.label}}</label>
+				{{form.fecha}}
+		     </div>
+		     <div class="form-group">
+		     	<label for="">{{form.pais.label}}</label>
+		     	{{form.pais}}
+		     </div>
+		     <div class="form-group">
+		     	<label for="">{{form.organizacion.label}}</label>
+		     	{{form.organizacion}}
+		     </div>
+		     <input type="submit" value="Consultar" class="btn btn-form" name="consulta"/>
+	     </form>
+	</div>
+
+
+	
+</div>
+
 <div class="row contenido-galeria">
+
 	{% paginate object_list %}
 	<div id="lightGallery">
  	{% for obj in object_list %}
@@ -75,8 +105,19 @@ if (n<12) {
 		                <i class="fa fa-search"></i>
 		  				<a href="#"></a>
 		            </figure>
+
 	            {% endthumbnail %}
-	      
+	            	<div class="g-datos">
+		            	<span>
+		            		{{obj.fecha|date:"d M Y"}}
+		            		
+		            	</span>
+		            	<span class="g-pais">
+		            		{{obj.entrevistado.pais}}
+		            	</span>
+		            </div>
+	            
+	      		
 	  		</div>
 	  	{% else %}
 	  		<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 item" 
@@ -90,6 +131,15 @@ if (n<12) {
 		                <i class="fa fa-search"></i>
 		  				<a href="#"></a>
 		            </figure>
+		            <div class="g-datos">
+		            	<span>
+		            		{{obj.fecha|date:"d M Y"}}
+		            		
+		            	</span>
+		            	<span class="g-pais">
+		            		{{obj.entrevistado.pais}}
+		            	</span>
+		            </div>
 	          
 	      
 	  		</div>
