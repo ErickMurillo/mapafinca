@@ -83,24 +83,24 @@
                             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                                 <ol class="breadcrumb">
                                     <li>
-                                        Indicador  
+                                        Indicador
                                     </li>
                                     <li>
                                         Uso de Tierra
                                     </li>
-                                    
+
                                 </ol>
                             </div>
                             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                 <span class="ver-indicador" >
-                                    
+
                                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                         Ver más indicadores <span class="fa fa-search"></span>
                                     </a>
                                 </span>
                             </div>
                         </div>
-                        
+
 
                     </h4>
                  </div>
@@ -139,9 +139,9 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
                                 <div class="excel">
-                                    <a href="#" onclick="exportarXLS('modalidad'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
+                                    <a href="#" onclick="exportarXLS('modalidad-{{k}}'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
                                 </div>
-                            <div class="table-responsive" id="modalidad">
+                            <div class="table-responsive" id="modalidad-{{k}}">
                                 <table class="table table-bordered table-hover">
                                     <caption>Promedio en Mz: {{v.3|floatformat:2}} Mz</caption>
                                     <thead>
@@ -167,9 +167,9 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 space">
                             <div class="excel">
-                                <a href="#" onclick="exportarXLS('modalidad1'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
+                                <a href="#" onclick="exportarXLS('modalidad1-{{k}}'); return false;"><span class="fa fa-download"> Exportar a excel</span></a>
                             </div>
-                             <div class="table-responsive" id="modalidad1">
+                             <div class="table-responsive" id="modalidad1-{{k}}">
                                 <table class="table table-bordered table-hover">
                                     <caption>Promedio en Mz: {{v.3|floatformat:2}} Mz</caption>
                                     <thead>
@@ -206,7 +206,7 @@
             {% endfor %}
         </div><!-- role tabpanel -->
     </div>
-      
+
 
 </div> <!-- fin container -->
 {% endblock contenido %}

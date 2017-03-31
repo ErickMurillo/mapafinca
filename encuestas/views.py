@@ -175,7 +175,7 @@ class MapaView(TemplateView):
         return context
 
 def principal_dashboard(request, template='dashboard.html', departamento_id=None):
-    
+
     filtro = Encuesta.objects.filter(entrevistado__municipio__departamento__id=departamento_id) #.distinct('entrevistado__id')
     ahora = filtro.distinct('entrevistado__id')
     dividir_todo = ahora.count()
@@ -432,7 +432,7 @@ def principal_dashboard_pais(request, template='dashboard_pais.html', pais=None,
             pass
 
         tiempo_patron_gasto[anio[0]] = [gasto_finca_verano,gasto_finca_invierno,gasto_fuera_finca_verano,gasto_fuera_finca_invierno]
-        
+
         # grafico de ingresos
         tradicional_verano = 0
         tradicional_invierno = 0
@@ -1799,10 +1799,16 @@ def calorias(request, template="indicadores/calorias.html"):
             calculo = filtro.filter(year=year[0],
                                     cultivoshuertosfamiliares__cultivo=obj).aggregate(t=Coalesce(Avg('cultivoshuertosfamiliares__consumo_familia'), V(0)))['t']
             consumida = calculo / 12
-            consumida_gramos = consumida * obj.calorias
+            try:
+                consumida_gramos = consumida * obj.calorias
+            except:
+                consumida_gramos = 0
             calorias_mes = float(consumida_gramos) / numero_total_habitante
             calorias_dia = float(consumida_gramos) / 30
-            gramo_dia = float(obj.proteinas)
+            try:
+                gramo_dia = float(obj.proteinas)
+            except:
+                pass
             if calorias_dia > 0:
                 calorias_huerto[obj] = (consumida, obj.get_unidad_medida_display(),consumida_gramos,obj.calorias, obj.proteinas,calorias_dia,gramo_dia)
 
